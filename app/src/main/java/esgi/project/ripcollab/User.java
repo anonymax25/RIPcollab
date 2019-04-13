@@ -18,6 +18,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -70,7 +72,7 @@ public class User implements Serializable {
     }
 
     public String toString(){
-        String string = "ID: " + id + " nom: " + last_name + " " + first_name;
+        String string = "USER => ID: " + id + " nom: " + last_name + " " + first_name;
         return string;
     }
     public int getId() {
@@ -203,42 +205,20 @@ public class User implements Serializable {
         }
     }
 
-
-
-    /*
-    public void serialize(){
-        try {
-            String path = Environment.getExternalStorageDirectory() + "/";
-
-            FileOutputStream fileOut = new FileOutputStream(path + "user.ser");
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(this);
-            out.close();
-            fileOut.close();
-            System.out.println("Serialized data is saved in /tmp/employee.ser");
-
-        } catch (IOException e) {
-            System.out.println(e);
-        }
+    public void serialization(String file) throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(bufferedOutputStream);
+        objectOutputStream.writeObject(this);
+        objectOutputStream.close();
     }
 
-    public static User unserialize(){
-        User user = null;
-        try {
-            String path = Environment.getExternalStorageDirectory() + "/";
-
-            FileInputStream fileIn = new FileInputStream(path + "/user.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            user = (User) in.readObject();
-            in.close();
-            fileIn.close();
-        } catch (IOException i) {
-            i.printStackTrace();
-        } catch (ClassNotFoundException c) {
-            System.out.println("Employee class not found");
-            c.printStackTrace();
-        }
-        return user;
+    public static Object deSerialization(String file) throws IOException, ClassNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(file);
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+        ObjectInputStream objectInputStream = new ObjectInputStream(bufferedInputStream);
+        Object object = objectInputStream.readObject();
+        objectInputStream.close();
+        return object;
     }
-    */
 }

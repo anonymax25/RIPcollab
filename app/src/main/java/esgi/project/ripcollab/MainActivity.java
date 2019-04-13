@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         try{
-
+                            Info.setText(" ");
                             JSONArray jsonarray = new JSONArray(response.toString());
                             //System.out.println(jsonarray);
                             ArrayList<String> emails = new ArrayList<String>();
@@ -116,43 +116,19 @@ public class MainActivity extends AppCompatActivity {
                                             jsonobject.getInt("isBanned"),jsonobject.getInt("isAdmin"),jsonobject.getInt("isCollaborateur"));
 
                                     if (email.equals(user.getEmail())){
-
+                                        i=jsonarray.length();
                                         if (user.checkRightPassword(password)){
                                             if (user.getIsCollaborateur() == 1){
-                                                System.out.println("Connected");
-
+                                                Info.setText("Attempts remaining: " + counter);
                                                 Intent intent = new Intent(MainActivity.this, CollabHome.class);
-
-                                                //user.serialize();
-                                                intent.putExtra("SESSION", user);
-                                                intent.putExtra("SESSION_ID", user.getId());
-                                                intent.putExtra("SESSION_EMAIL", user.getEmail());
-                                                intent.putExtra("SESSION_PASSWORD", user.getPassword());
-                                                intent.putExtra("SESSION_LAST_NAME", user.getLast_name());
-                                                intent.putExtra("SESSION_FIRST_NAME", user.getFirst_name());
-                                                intent.putExtra("SESSION_BIRTHDAY", user.getBirthday());
-                                                intent.putExtra("SESSION_GENDER", user.getGender());
-                                                intent.putExtra("SESSION_AVATAR", user.getAvatar());
-                                                intent.putExtra("SESSION_ZIP_CODE", user.getZip_code());
-                                                intent.putExtra("SESSION_ADDRESS", user.getAddress());
-                                                intent.putExtra("SESSION_ISBANNED", user.getIsBanned());
-                                                intent.putExtra("SESSION_ISADMIN", user.getIsAdmin());
-                                                intent.putExtra("SESSION_ISCOLLABORATEUR", user.getIsCollaborateur());
-
-
-
-                                                System.out.println("Connected 2");
+                                                intent.putExtra("SESSION_USER", user);
                                                 startActivity(intent);
-
                                             } else {
-                                                System.out.println("Not collaborateur!");
                                                 Info.setText("Vous n'etes pas un collaborateur!\nInscrivez vous sur le site\nAttempts remaining: " + counter);
                                             }
                                         } else {
-                                            System.out.println("bad password!");
                                             counter--;
-
-                                            Info.setText("Attempts remaining: " + counter);
+                                            Info.setText("Bad password\nAttempts remaining: " + counter);
 
                                             if (counter == 0){
                                                 Login.setEnabled(false);
@@ -160,8 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         }
                                     } else {
-                                        System.out.println("Incorrect email!");
-                                        Info.setText("Wrong email\nAttempts remaining: " + counter);
+                                        Info.setText("Incorrect email\nAttempts remaining: " + counter);
                                     }
                                     //emails.add(jsonobject.getString("email"));
                                     //System.out.println(jsonobject.toString(2));

@@ -20,33 +20,39 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.Serializable;
 
+import static esgi.project.ripcollab.User.deSerialization;
 
 
 public class CollabHome extends AppCompatActivity {
 
     private TextView Id;
     private TextView Name;
+    private TextView Hours;
     private Switch Online;
     private RatingBar Rating;
+    private Button Refresh;
+    private User user;
+    private RequestQueue requestQueue;
+    private int isOnline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collab_home);
 
-        User user = new User(getIntent().getIntExtra("SESSION_ID",-1),getIntent().getStringExtra("SESSION_EMAIL"),getIntent().getStringExtra("SESSION_PASSWORD"),
+        user = (User)getIntent().getSerializableExtra("SESSION_USER");
+
+        /*user = new User(getIntent().getIntExtra("SESSION_ID",-1),getIntent().getStringExtra("SESSION_EMAIL"),getIntent().getStringExtra("SESSION_PASSWORD"),
                 getIntent().getStringExtra("SESSION_LAST_NAME"),getIntent().getStringExtra("SESSION_FIRST_NAME"),getIntent().getStringExtra("SESSION_BIRTHDAY"),
                 getIntent().getStringExtra("SESSION_GENDER"),getIntent().getStringExtra("SESSION_AVATAR"),getIntent().getStringExtra("SESSION_ZIP_CODE"),getIntent().getStringExtra("SESSION_ADDRESS"),
                 getIntent().getIntExtra("SESSION_ISBANNED",-1),getIntent().getIntExtra("SESSION_ISADMIN",-1),getIntent().getIntExtra("SESSION_ISCOLLABORATEUR",-1));
+    */
 
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        isOnline(requestQueue,user.getId());
-
-
+        requestQueue = Volley.newRequestQueue(this);
+        getCollabInfo(requestQueue,user.getId());
 
 
         Id = (TextView)findViewById(R.id.tvid);
@@ -54,25 +60,60 @@ public class CollabHome extends AppCompatActivity {
 
         Name = (TextView)findViewById(R.id.tvName);
         Name.setText("Collab: " + user.getFirst_name() + " " + user.getLast_name());
-        Name.setTextSize(12,2);
 
-        Online = (Switch) findViewById(R.id.swOnline);
+        Refresh = (Button) findViewById(R.id.btnRefresh);
 
-
-        Online.setOnClickListener(new View.OnClickListener() {
-
-
-
-            
+        Refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getCollabInfo(requestQueue, user.getId());
+            }
+        });
+
+
+        Online = (Switch) findViewById(R.id.swOnline);
+        Online.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchOnline(user.getId());
                 System.out.println("click online");
             }
         });
 
     }
 
-    public void isOnline(RequestQueue requestQueue, int id){
+    public void switchOnline(int userId){
+        switch (this.isOnline){
+            case 1:
+                this.isOnline = 0;
+                break;
+            case 0:
+                this.isOnline = 1;
+                break;
+        }
+        String stringURL = "http://192.168.43.220:80/mrbriatte/esgiPark/api/users/putOnline.php?id=" + userId + "&isOnline=" + this.isOnline;
+
+        JsonObjectRequest objectRequest = new JsonObjectRequest(
+                Request.Method.PUT,
+                stringURL,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("ERR", "http err isOnline onResponse: " + error.toString());
+                    }
+                }
+        );
+        requestQueue.add(objectRequest);
+
+    }
+
+    public void getCollabInfo(RequestQueue requestQueue, int id){
 
         String stringURL = "http://192.168.43.220:80/mrbriatte/esgiPark/api/users/get.php?id=" + id;
 
@@ -89,8 +130,10 @@ public class CollabHome extends AppCompatActivity {
                             Online = (Switch) findViewById(R.id.swOnline);
                             if (response.getInt("isOnline") == 1){
                                 Online.setChecked(true);
+                                isOnline = 1;
                             } else {
                                 Online.setChecked(false);
+                                isOnline = 0;
                             }
 
                             //Rating bar
@@ -109,6 +152,9 @@ public class CollabHome extends AppCompatActivity {
                             } else if (rating < 1 && rating >= 0){
                                 Rating.setRating(0);
                             }
+
+                            Hours = (TextView) findViewById(R.id.tvHours);
+                            Hours.setText("heures collab:\n" + response.getInt("heuresTravailees") + "h");
 
                         }catch (JSONException e){
                             System.out.println(e);
