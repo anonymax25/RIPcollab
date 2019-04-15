@@ -5,7 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -20,11 +22,13 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 
 
 public class CollabHome extends AppCompatActivity {
 
     private static final String apiURI = "http://192.168.43.220:80/mrbriatte/esgiPark/api/";
+    private User user;
     private TextView Id;
     private TextView Name;
     private TextView Hours;
@@ -32,9 +36,9 @@ public class CollabHome extends AppCompatActivity {
     private RatingBar Rating;
     private Button Refresh;
     private Button TrajetsValide;
-    private User user;
     private RequestQueue requestQueue;
     private int isOnline;
+    private ArrayList<JSONObject> trajets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +46,6 @@ public class CollabHome extends AppCompatActivity {
         setContentView(R.layout.activity_collab_home);
 
         user = (User)getIntent().getSerializableExtra("SESSION_USER");
-
         requestQueue = Volley.newRequestQueue(this);
 
         getCollabInfo(requestQueue,user.getId());
@@ -51,6 +54,12 @@ public class CollabHome extends AppCompatActivity {
         initRefrseh();
         initOnline();
         trajetValideListenerButton();
+
+
+        /*
+        ListView list = (ListView) findViewById(R.id.list_links);
+        list.setAdapter(new ArrayAdapter<String>(this, R.layout.list_result, movies));
+        */
     }
 
     public void trajetValideListenerButton(){
@@ -58,7 +67,32 @@ public class CollabHome extends AppCompatActivity {
         TrajetsValide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
+                String stringURL = apiURI + "users/listTrips.php?idChauffeur=" + user.getId();
 
+                JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, stringURL,
+                        null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+
+                                    System.out.println(response.toString(2));
+
+                                }catch (JSONException e){
+                                    System.out.println(e);
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("ERRHTTP", "http err onResponse: " + error.toString());
+                            }
+                        }
+                );
+                requestQueue.add(objectRequest);
+                */
                 if (!CollabHome.this.isFinishing()){
                     Intent intent = new Intent(CollabHome.this, ValidActivity.class);
                     intent.putExtra("SESSION_USER", user);
