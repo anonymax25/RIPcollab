@@ -43,27 +43,17 @@ public class CollabHome extends AppCompatActivity {
 
         user = (User)getIntent().getSerializableExtra("SESSION_USER");
 
-
         requestQueue = Volley.newRequestQueue(this);
+
         getCollabInfo(requestQueue,user.getId());
 
+        initInfos();
+        initRefrseh();
+        initOnline();
+        trajetValideListenerButton();
+    }
 
-        Id = (TextView)findViewById(R.id.tvid);
-        Id.setText("User ID: " + user.getId());
-
-        Name = (TextView)findViewById(R.id.tvName);
-        Name.setText("Collab: " + user.getFirst_name() + " " + user.getLast_name());
-
-
-
-        Refresh = (Button) findViewById(R.id.btnRefresh);
-        Refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getCollabInfo(requestQueue, user.getId());
-            }
-        });
-
+    public void trajetValideListenerButton(){
         TrajetsValide = (Button) findViewById(R.id.btnValidTrips);
         TrajetsValide.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,9 +68,17 @@ public class CollabHome extends AppCompatActivity {
 
             }
         });
+    }
 
+    public void initInfos(){
+        Id = (TextView)findViewById(R.id.tvid);
+        Id.setText("User ID: " + user.getId());
 
+        Name = (TextView)findViewById(R.id.tvName);
+        Name.setText("Collab: " + user.getFirst_name() + " " + user.getLast_name());
+    }
 
+    public void initOnline(){
         Online = (Switch) findViewById(R.id.swOnline);
         Online.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,7 +87,16 @@ public class CollabHome extends AppCompatActivity {
                 System.out.println("click online");
             }
         });
+    }
 
+    public void initRefrseh(){
+        Refresh = (Button) findViewById(R.id.btnRefresh);
+        Refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getCollabInfo(requestQueue, user.getId());
+            }
+        });
     }
 
     public void switchOnline(int userId){
