@@ -204,21 +204,4 @@ public class User implements Serializable {
             return false;
         }
     }
-
-    public void serialization(String file) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(bufferedOutputStream);
-        objectOutputStream.writeObject(this);
-        objectOutputStream.close();
-    }
-
-    public static Object deSerialization(String file) throws IOException, ClassNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(file);
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-        ObjectInputStream objectInputStream = new ObjectInputStream(bufferedInputStream);
-        Object object = objectInputStream.readObject();
-        objectInputStream.close();
-        return object;
-    }
 }

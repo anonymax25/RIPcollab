@@ -20,20 +20,18 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.Serializable;
-
-import static esgi.project.ripcollab.User.deSerialization;
 
 
 public class CollabHome extends AppCompatActivity {
 
+    private static final String apiURI = "http://192.168.43.220:80/mrbriatte/esgiPark/api/";
     private TextView Id;
     private TextView Name;
     private TextView Hours;
     private Switch Online;
     private RatingBar Rating;
     private Button Refresh;
+    private Button TrajetsValide;
     private User user;
     private RequestQueue requestQueue;
     private int isOnline;
@@ -45,11 +43,6 @@ public class CollabHome extends AppCompatActivity {
 
         user = (User)getIntent().getSerializableExtra("SESSION_USER");
 
-        /*user = new User(getIntent().getIntExtra("SESSION_ID",-1),getIntent().getStringExtra("SESSION_EMAIL"),getIntent().getStringExtra("SESSION_PASSWORD"),
-                getIntent().getStringExtra("SESSION_LAST_NAME"),getIntent().getStringExtra("SESSION_FIRST_NAME"),getIntent().getStringExtra("SESSION_BIRTHDAY"),
-                getIntent().getStringExtra("SESSION_GENDER"),getIntent().getStringExtra("SESSION_AVATAR"),getIntent().getStringExtra("SESSION_ZIP_CODE"),getIntent().getStringExtra("SESSION_ADDRESS"),
-                getIntent().getIntExtra("SESSION_ISBANNED",-1),getIntent().getIntExtra("SESSION_ISADMIN",-1),getIntent().getIntExtra("SESSION_ISCOLLABORATEUR",-1));
-    */
 
         requestQueue = Volley.newRequestQueue(this);
         getCollabInfo(requestQueue,user.getId());
@@ -61,14 +54,31 @@ public class CollabHome extends AppCompatActivity {
         Name = (TextView)findViewById(R.id.tvName);
         Name.setText("Collab: " + user.getFirst_name() + " " + user.getLast_name());
 
-        Refresh = (Button) findViewById(R.id.btnRefresh);
 
+
+        Refresh = (Button) findViewById(R.id.btnRefresh);
         Refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getCollabInfo(requestQueue, user.getId());
             }
         });
+
+        TrajetsValide = (Button) findViewById(R.id.btnValidTrips);
+        TrajetsValide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!CollabHome.this.isFinishing()){
+                    Intent intent = new Intent(CollabHome.this, ValidActivity.class);
+                    intent.putExtra("SESSION_USER", user);
+                    startActivity(intent);
+                }
+
+
+            }
+        });
+
 
 
         Online = (Switch) findViewById(R.id.swOnline);
@@ -91,7 +101,7 @@ public class CollabHome extends AppCompatActivity {
                 this.isOnline = 1;
                 break;
         }
-        String stringURL = "http://192.168.43.220:80/mrbriatte/esgiPark/api/users/putOnline.php?id=" + userId + "&isOnline=" + this.isOnline;
+        String stringURL = apiURI + "users/putOnline.php?id=" + userId + "&isOnline=" + this.isOnline;
 
         JsonObjectRequest objectRequest = new JsonObjectRequest(
                 Request.Method.PUT,
@@ -115,7 +125,7 @@ public class CollabHome extends AppCompatActivity {
 
     public void getCollabInfo(RequestQueue requestQueue, int id){
 
-        String stringURL = "http://192.168.43.220:80/mrbriatte/esgiPark/api/users/get.php?id=" + id;
+        String stringURL = apiURI + "users/get.php?id=" + id;
 
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, stringURL,
                 null,
@@ -139,7 +149,7 @@ public class CollabHome extends AppCompatActivity {
                             //Rating bar
                             Rating = (RatingBar) findViewById(R.id.rbRating);
                             double rating = response.getDouble("rating");
-                            if (rating == 5){
+                            if (rating == 5.0){
                                 Rating.setRating(5);
                             } else if (rating < 5 && rating >= 4){
                                 Rating.setRating(4);
