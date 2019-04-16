@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.android.volley.Request;
@@ -129,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
                                         } else {
                                             counter--;
                                             Info.setText("Bad password\nAttempts remaining: " + counter);
+                                            Toast.makeText(MainActivity.this, "Attempts remaining: " + counter,Toast.LENGTH_LONG).show();
 
                                             if (counter == 0){
                                                 Login.setEnabled(false);

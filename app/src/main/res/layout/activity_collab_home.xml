@@ -1,185 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/a"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".CollabHome">
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:gravity="center"
+        android:layout_gravity="center"
         android:text="Dashboard collab"
-        android:textSize="32sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.187"
-        app:layout_constraintStart_toEndOf="@+id/tvid"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="32sp" />
 
     <Switch
         android:id="@+id/swOnline"
         android:layout_width="125dp"
         android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="Go Online"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.588"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rbRating" />
-
-    <TextView
-        android:id="@+id/tvid"
-        android:layout_width="wrap_content"
-        android:layout_height="17dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:gravity="center"
-        android:text="User ID: ?"
-        app:layout_constraintBottom_toTopOf="@+id/tvName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.363" />
+        android:layout_gravity="center"
+        android:text="Go Online"/>
 
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="239dp"
-        android:layout_height="26dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginRight="64dp"
-        android:gravity="center"
-        android:text="Collab name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <RatingBar
-        android:id="@+id/rbRating"
-        android:layout_width="246dp"
-        android:layout_height="54dp"
 
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="52dp"
-        android:layout_marginRight="52dp"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:isIndicator="true"
-        android:numStars="5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvHours"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
-    <TextView
-        android:id="@+id/tvHours"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:gravity="center"
-        android:text="heures collab:\n127h"
-        app:layout_constraintEnd_toStartOf="@+id/tvName"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvid" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="Rating:"
-        app:layout_constraintEnd_toStartOf="@+id/rbRating"
-        app:layout_constraintHorizontal_bias="0.375"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHours" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnRefresh"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tvid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginRight="10dp"
+            android:text="User ID: ?" />
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginRight="10dp"
+            android:text="Collab name"/>
+
+        <TextView
+            android:id="@+id/tvHours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="H conduite: 127h" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Refresh Info"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/_dynamic" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnValidTrips"
-        android:layout_width="156dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Validated Trips"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnRefresh"
-        app:layout_constraintTop_toBottomOf="@+id/_dynamic" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rating:"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textSize="30dp"/>
 
-    <Button
-        android:id="@+id/btnOldTrips"
-        android:layout_width="98dp"
+        <RatingBar
+            android:id="@+id/rbRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:isIndicator="true"
+            android:numStars="5" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Old Trips"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnValidTrips"
-        app:layout_constraintTop_toBottomOf="@+id/_dynamic" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:drawableLeft="@android:drawable/ic_menu_rotate"
+            android:text="Info"/>
+
+        <Button
+            android:id="@+id/btnValidTrips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Valid Trips" />
+
+        <Button
+            android:id="@+id/btnOldTrips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Old Trips" />
+        <Button
+            android:id="@+id/btnDeco"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Disconnect" />
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/textView6"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="New trips to validate"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/swOnline" />
+        android:gravity="center"
+        android:text="New trips to validate" />
 
     <ListView
         android:id="@+id/lvTrajets"
-        android:layout_width="395dp"
-        android:layout_height="419dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/cardview_light_background"
-        android:scrollbars="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        android:scrollbars="vertical" />
 
-</android.support.constraint.ConstraintLayout>
+
+
+</LinearLayout>

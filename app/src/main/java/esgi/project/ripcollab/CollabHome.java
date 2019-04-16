@@ -1,6 +1,8 @@
 package esgi.project.ripcollab;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,10 +38,20 @@ public class CollabHome extends AppCompatActivity {
     private Switch Online;
     private RatingBar Rating;
     private Button Refresh;
+    private Button Quit;
     private Button TrajetsValide;
     private RequestQueue requestQueue;
     private int isOnline;
+    private ListView mListView;
     private ArrayList<JSONObject> trajets;
+
+    private String[] prenoms = new String[]{
+            "Antoine", "Benoit", "Cyril", "David", "Eloise", "Florent",
+            "Gerard", "Hugo", "Ingrid", "Jonathan", "Kevin", "Logan",
+            "Mathieu", "Noemie", "Olivia", "Philippe", "Quentin", "Romain",
+            "Sophie", "Tristan", "Ulric", "Vincent", "Willy", "Xavier",
+            "Yann", "Zoé"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +63,16 @@ public class CollabHome extends AppCompatActivity {
 
         getCollabInfo(requestQueue,user.getId());
 
+        getTripsToValidate();
+        mListView = (ListView) findViewById(R.id.lvTrajets);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(CollabHome.this, android.R.layout.simple_list_item_1, prenoms);
+
+        mListView.setAdapter(adapter);
+
         initInfos();
         initRefrseh();
         initOnline();
+        initDeco();
         trajetValideListenerButton();
 
 
@@ -61,6 +81,44 @@ public class CollabHome extends AppCompatActivity {
         list.setAdapter(new ArrayAdapter<String>(this, R.layout.list_result, movies));
         */
     }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Toast.makeText(CollabHome.this, "Click on disconnect",Toast.LENGTH_LONG).show();
+
+    }
+
+    public void getTripsToValidate(){
+
+    }
+
+    public void initDeco(){
+        Quit = (Button) findViewById(R.id.btnDeco);
+        Quit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(CollabHome.this)
+                        .setTitle("Question ?")
+                        .setMessage("Etes-vous sur de vouloir vous déconnecter ?")
+                        .setPositiveButton("oui", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish(); //ferme l'activitée en cours
+                            }
+                        })
+                        .setNegativeButton("non", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setCancelable(false)
+                        .show();
+            }
+        });
+    }
+
 
     public void trajetValideListenerButton(){
         TrajetsValide = (Button) findViewById(R.id.btnValidTrips);

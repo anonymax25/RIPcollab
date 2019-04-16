@@ -26,9 +26,7 @@ public class ValidActivity extends AppCompatActivity {
         Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ValidActivity.this, CollabHome.class);
-                intent.putExtra("SESSION_USER", user);
-                startActivity(intent);
+                finish();
             }
         });
     }
