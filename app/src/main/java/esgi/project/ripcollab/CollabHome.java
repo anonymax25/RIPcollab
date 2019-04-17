@@ -2,6 +2,8 @@ package esgi.project.ripcollab;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,9 +21,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,9 +46,9 @@ public class CollabHome extends AppCompatActivity {
     private Button TrajetsValide;
     private RequestQueue requestQueue;
     private int isOnline;
-    private ListView mListView;
     private ArrayList<JSONObject> trajets;
-
+    private ListView listView;
+    private ArrayList<String> trajets2 = new ArrayList<String>();
     private String[] prenoms = new String[]{
             "Antoine", "Benoit", "Cyril", "David", "Eloise", "Florent",
             "Gerard", "Hugo", "Ingrid", "Jonathan", "Kevin", "Logan",
@@ -64,10 +68,6 @@ public class CollabHome extends AppCompatActivity {
         getCollabInfo(requestQueue,user.getId());
 
         getTripsToValidate();
-        mListView = (ListView) findViewById(R.id.lvTrajets);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(CollabHome.this, android.R.layout.simple_list_item_1, prenoms);
-
-        mListView.setAdapter(adapter);
 
         initInfos();
         initRefrseh();
@@ -75,11 +75,6 @@ public class CollabHome extends AppCompatActivity {
         initDeco();
         trajetValideListenerButton();
 
-
-        /*
-        ListView list = (ListView) findViewById(R.id.list_links);
-        list.setAdapter(new ArrayAdapter<String>(this, R.layout.list_result, movies));
-        */
     }
 
     @Override
@@ -90,7 +85,56 @@ public class CollabHome extends AppCompatActivity {
     }
 
     public void getTripsToValidate(){
+            String stringURL = apiURI + "users/listTrips.php?idChauffeur=" + user.getId();
 
+            JsonArrayRequest objectRequest = new JsonArrayRequest(
+                    Request.Method.GET,
+                    stringURL,
+                    null,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            try {
+
+                                JSONArray jsonarray = new JSONArray(response.toString());
+
+                                for (int i = 0; i < jsonarray.length(); i++) {
+                                    if (jsonarray.getJSONObject(i) != null){
+                                        JSONObject jsonobject = jsonarray.getJSONObject(i);
+                                        //trajets.add(jsonobject);
+                                        trajets2.add(jsonobject.getString("heureDebut") + " From " + jsonobject.getString("debut") + " to " + jsonobject.getString("fin"));
+                                        //System.out.println("http" + jsonobject.toString(2));
+                                    }
+                                }
+
+                                System.out.println(trajets2);
+
+                                createListView();
+
+                            }catch (JSONException e){
+                                System.out.println(e);
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("ERRHTTP", "http err onResponse: " + error.toString());
+                        }
+                    }
+            );
+            requestQueue.add(objectRequest);
+
+    }
+    public void createListView(){
+        CustomArrayAdpter adapter = new CustomArrayAdpter(trajets2, this);
+
+        listView = (ListView) findViewById(R.id.lvTrajets);
+        listView.setAdapter(adapter);
+
+
+
+        //final ArrayAdapter<String> adapter = new ArrayAdapter<String>(CollabHome.this, android.R.layout.simple_list_item_1, trajets2);
     }
 
     public void initDeco(){
@@ -187,6 +231,7 @@ public class CollabHome extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 getCollabInfo(requestQueue, user.getId());
+                getTripsToValidate();
             }
         });
     }
