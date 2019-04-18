@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void validate(final String email, final String password){
 
-        String stringURL = "http://192.168.43.220:80/mrbriatte/esgiPark/api/users/list.php";
+        String stringURL = "http://192.168.43.220:80/-WEB-R.I.P-Project/API/api/users/list.php";
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 

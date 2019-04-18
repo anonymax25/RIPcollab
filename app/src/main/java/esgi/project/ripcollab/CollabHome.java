@@ -30,11 +30,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class CollabHome extends AppCompatActivity {
 
-    private static final String apiURI = "http://192.168.43.220:80/mrbriatte/esgiPark/api/";
+    //private static final String apiURI = "http://ziongames.fr/API/api/users/list.php";
+    private static final String apiURI = "http://192.168.43.220:80/-WEB-R.I.P-Project/API/api/";
     private User user;
     private TextView Id;
     private TextView Name;
@@ -47,15 +49,9 @@ public class CollabHome extends AppCompatActivity {
     private RequestQueue requestQueue;
     private int isOnline;
     private ArrayList<JSONObject> trajets;
-    private ListView listView;
+    private static ListView listView;
     private ArrayList<String> trajets2 = new ArrayList<String>();
-    private String[] prenoms = new String[]{
-            "Antoine", "Benoit", "Cyril", "David", "Eloise", "Florent",
-            "Gerard", "Hugo", "Ingrid", "Jonathan", "Kevin", "Logan",
-            "Mathieu", "Noemie", "Olivia", "Philippe", "Quentin", "Romain",
-            "Sophie", "Tristan", "Ulric", "Vincent", "Willy", "Xavier",
-            "Yann", "Zoé"
-    };
+    private ArrayList<Trajet> trips = new ArrayList<Trajet>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,9 +97,15 @@ public class CollabHome extends AppCompatActivity {
                                 for (int i = 0; i < jsonarray.length(); i++) {
                                     if (jsonarray.getJSONObject(i) != null){
                                         JSONObject jsonobject = jsonarray.getJSONObject(i);
-                                        //trajets.add(jsonobject);
+                                        System.out.println(jsonobject.toString(2));
+                                        trips.add(new Trajet(jsonobject.getInt("idTrajet"),jsonobject.getInt("idClient"),jsonobject.getInt("idChauffeur"),
+                                                jsonobject.getString("heureDebut"),jsonobject.getString("heureFin"), jsonobject.getString("dateResevation"),
+                                                jsonobject.getInt("distanceTrajet"),jsonobject.getDouble("prixtrajet"),jsonobject.getString("debut"),jsonobject.getString("fin"),
+                                                jsonobject.getString("duration"),jsonobject.getString("state"),jsonobject.getInt("stateDriver")                                     ));
+
                                         trajets2.add(jsonobject.getString("heureDebut") + " From " + jsonobject.getString("debut") + " to " + jsonobject.getString("fin"));
                                         //System.out.println("http" + jsonobject.toString(2));
+                                        //Trajet trip = new TR
                                     }
                                 }
 
@@ -127,9 +129,13 @@ public class CollabHome extends AppCompatActivity {
 
     }
     public void createListView(){
-        CustomArrayAdpter adapter = new CustomArrayAdpter(trajets2, this);
+
+        System.out.println(trips);
+
+        CustomArrayAdpter adapter = new CustomArrayAdpter(trips, this, requestQueue);
 
         listView = (ListView) findViewById(R.id.lvTrajets);
+
         listView.setAdapter(adapter);
 
 
@@ -230,6 +236,10 @@ public class CollabHome extends AppCompatActivity {
         Refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                trips.clear();
+                listView.setAdapter(null);
+
                 getCollabInfo(requestQueue, user.getId());
                 getTripsToValidate();
             }
