@@ -122,9 +122,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:textSize="22dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="New trips to validate" />
+
+    <TextView
+        android:id="@+id/tv_noTrips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
 
     <ListView
         android:id="@+id/lvTrajets"
@@ -132,6 +139,8 @@
         android:layout_height="wrap_content"
         android:background="@color/cardview_light_background"
         android:scrollbars="vertical" />
+
+
 
 
 

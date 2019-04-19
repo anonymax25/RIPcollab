@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -48,9 +49,7 @@ public class CollabHome extends AppCompatActivity {
     private Button TrajetsValide;
     private RequestQueue requestQueue;
     private int isOnline;
-    private ArrayList<JSONObject> trajets;
     private static ListView listView;
-    private ArrayList<String> trajets2 = new ArrayList<String>();
     private ArrayList<Trajet> trips = new ArrayList<Trajet>();
 
     @Override
@@ -103,13 +102,13 @@ public class CollabHome extends AppCompatActivity {
                                                 jsonobject.getInt("distanceTrajet"),jsonobject.getDouble("prixtrajet"),jsonobject.getString("debut"),jsonobject.getString("fin"),
                                                 jsonobject.getString("duration"),jsonobject.getString("state"),jsonobject.getInt("stateDriver")                                     ));
 
-                                        trajets2.add(jsonobject.getString("heureDebut") + " From " + jsonobject.getString("debut") + " to " + jsonobject.getString("fin"));
+                                        //trajets2.add(jsonobject.getString("heureDebut") + " From " + jsonobject.getString("debut") + " to " + jsonobject.getString("fin"));
                                         //System.out.println("http" + jsonobject.toString(2));
                                         //Trajet trip = new TR
                                     }
                                 }
 
-                                System.out.println(trajets2);
+                                //System.out.println(trajets2);
 
                                 createListView();
 
@@ -132,12 +131,25 @@ public class CollabHome extends AppCompatActivity {
 
         System.out.println(trips);
 
-        CustomArrayAdpter adapter = new CustomArrayAdpter(trips, this, requestQueue);
+        if (trips.size() != 0){
+            CustomArrayAdapter adapter = new CustomArrayAdapter(trips, this, requestQueue);
 
-        listView = (ListView) findViewById(R.id.lvTrajets);
+            listView = (ListView) findViewById(R.id.lvTrajets);
 
-        listView.setAdapter(adapter);
+            listView.setAdapter(adapter);
 
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(CollabHome.this, TrajetActivity.class);
+                    intent.putExtra("TRAJET",trips.get(position));
+                    startActivity(intent);
+                }
+            });
+        } else {
+            TextView noTrips = (TextView) findViewById(R.id.tv_noTrips);
+            noTrips.setText("No trips for you yet.\nSorry :'(");
+        }
 
 
         //final ArrayAdapter<String> adapter = new ArrayAdapter<String>(CollabHome.this, android.R.layout.simple_list_item_1, trajets2);

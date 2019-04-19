@@ -15,25 +15,22 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class CustomArrayAdpter extends BaseAdapter implements ListAdapter {
+public class CustomArrayAdapterValid extends BaseAdapter implements ListAdapter {
     private ArrayList<Trajet> list;
     private Context context;
     private RequestQueue requestQueue;
-    private static final String apiURI = "http://192.168.43.220:80/mrbriatte/esgiPark/api/";
+    private static final String apiURI = "http://192.168.43.220:80/-WEB-R.I.P-Project/API/api/";
 
 
 
-    public CustomArrayAdpter(ArrayList<Trajet> list, Context context, RequestQueue requestQueue) {
+    public CustomArrayAdapterValid(ArrayList<Trajet> list, Context context, RequestQueue requestQueue) {
         this.list = list;
         this.context = context;
         this.requestQueue = requestQueue;
@@ -59,7 +56,7 @@ public class CustomArrayAdpter extends BaseAdapter implements ListAdapter {
         View view = convertView;
         if (view == null) {
             LayoutInflater inflater = LayoutInflater.from(this.context);
-            view = inflater.inflate(R.layout.custom_list_view, null);
+            view = inflater.inflate(R.layout.custom_list_view_valid, null);
         }
 
         final Trajet current = (Trajet) getItem(position);
@@ -69,26 +66,17 @@ public class CustomArrayAdpter extends BaseAdapter implements ListAdapter {
         listItemText.setText(current.getHeureDebut() + " from " + current.getDebut() + " to " + current.getFin());
 
         //Handle buttons and add onClickListeners
-        Button deleteBtn = (Button)view.findViewById(R.id.delete_btn);
-        Button addBtn = (Button)view.findViewById(R.id.add_btn);
+        Button finish = (Button)view.findViewById(R.id.btn_finish);
 
-        deleteBtn.setOnClickListener(new View.OnClickListener(){
+        finish.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Trip refused",Toast.LENGTH_LONG).show();
-                list.remove(position);
-                notifyDataSetChanged();
-            }
-        });
-        addBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "Trip validated",Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Trip finished",Toast.LENGTH_LONG).show();
                 list.remove(position);
 
 
 
-                String stringURL = apiURI + "users/putTripValidated.php?idTrajet=" + current.getIdTrajet();
+                String stringURL = apiURI + "users/putTripFinished.php?idTrajet=" + current.getIdTrajet();
 
                 JsonObjectRequest objectRequest = new JsonObjectRequest(
                         Request.Method.GET,

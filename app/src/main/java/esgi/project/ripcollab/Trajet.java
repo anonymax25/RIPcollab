@@ -1,6 +1,8 @@
 package esgi.project.ripcollab;
 
-public class Trajet {
+import java.io.Serializable;
+
+public class Trajet implements Serializable {
 
     private int idTrajet;
     private int idClient;
@@ -30,6 +32,25 @@ public class Trajet {
         this.duration = duration;
         this.state = state;
         this.stateDriver = stateDriver;
+    }
+
+    @Override
+    public String toString() {
+        return "Trajet{" +
+                "idTrajet=" + idTrajet +
+                ", idClient=" + idClient +
+                ", idChauffeur=" + idChauffeur +
+                ", heureDebut='" + heureDebut + '\'' +
+                ", heureFin='" + heureFin + '\'' +
+                ", dateResevation='" + dateResevation + '\'' +
+                ", distanceTrajet=" + distanceTrajet +
+                ", prixtrajet=" + prixtrajet +
+                ", debut='" + debut + '\'' +
+                ", fin='" + fin + '\'' +
+                ", duration='" + duration + '\'' +
+                ", state='" + state + '\'' +
+                ", stateDriver=" + stateDriver +
+                '}';
     }
 
     public int getIdTrajet() {
