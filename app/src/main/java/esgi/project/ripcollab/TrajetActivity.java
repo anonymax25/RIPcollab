@@ -1,5 +1,7 @@
 package esgi.project.ripcollab;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,10 +22,11 @@ import org.json.JSONObject;
 
 public class TrajetActivity extends AppCompatActivity {
 
+    private User user;
     private RequestQueue requestQueue;
     private Trajet trajet;
     private TextView tv;
-    private static final String apiURI = "http://192.168.43.220:80/-WEB-R.I.P-Project/API/api/";
+    private String apiURI;
     private Button deleteBtn;
     private Button addBtn;
     @Override
@@ -31,7 +34,10 @@ public class TrajetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trajet);
 
+        apiURI = (String)getIntent().getStringExtra("apiURI");
         requestQueue = Volley.newRequestQueue(this);
+
+        user = (User)getIntent().getSerializableExtra("USER");
 
         trajet = (Trajet)getIntent().getSerializableExtra("TRAJET");
 
@@ -45,41 +51,77 @@ public class TrajetActivity extends AppCompatActivity {
         deleteBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Toast.makeText(TrajetActivity.this, "Trip refused",Toast.LENGTH_LONG).show();
+                new AlertDialog.Builder(TrajetActivity.this)
+                        .setTitle("Question ?")
+                        .setMessage("Etes-vous sur de vouloir refuser le trajet ?")
+                        .setPositiveButton("oui", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(TrajetActivity.this, "Trip refused",Toast.LENGTH_LONG).show();
+                                finish(); //ferme l'activitée en cours
+                            }
+                        })
+                        .setNegativeButton("non", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setCancelable(false)
+                        .show();
+
             }
         });
         addBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Toast.makeText(TrajetActivity.this, "Trip validated",Toast.LENGTH_LONG).show();
 
-                String stringURL = apiURI + "users/putTripValidated.php?idTrajet=" + trajet.getIdTrajet();
-
-                JsonObjectRequest objectRequest = new JsonObjectRequest(
-                        Request.Method.GET,
-                        stringURL,
-                        null,
-                        new Response.Listener<JSONObject>() {
+                new AlertDialog.Builder(TrajetActivity.this)
+                        .setTitle("Question ?")
+                        .setMessage("Etes-vous sur de vouloir accepter le trajet ?")
+                        .setPositiveButton("oui", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    System.out.println(response.toString(2));
-                                    finish();
-                                }catch (JSONException e){
-                                    System.out.println(e);
-                                }
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(TrajetActivity.this, "Trip validated",Toast.LENGTH_LONG).show();
+
+                                String stringURL = apiURI + "users/putTripValidated.php?idTrajet=" + trajet.getIdTrajet() + "&metier=" + user.getMetier() + "&idCollab=" + user.getId();
+
+                                JsonObjectRequest objectRequest = new JsonObjectRequest(
+                                        Request.Method.PUT,
+                                        stringURL,
+                                        null,
+                                        new Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+                                                try {
+                                                    System.out.println(response.toString(2));
+                                                    finish();
+                                                }catch (JSONException e){
+                                                    System.out.println(e);
+                                                }
+                                            }
+                                        },
+                                        new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                Log.e("ERRHTTP", "http err onResponse: " + error.toString());
+                                            }
+                                        }
+                                );
+
+
+                                requestQueue.add(objectRequest);
                             }
-                        },
-                        new Response.ErrorListener() {
+                        })
+                        .setNegativeButton("non", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("ERRHTTP", "http err onResponse: " + error.toString());
+                            public void onClick(DialogInterface dialog, int which) {
+
                             }
-                        }
-                );
+                        })
+                        .setCancelable(false)
+                        .show();
 
-
-                requestQueue.add(objectRequest);
 
             }
         });

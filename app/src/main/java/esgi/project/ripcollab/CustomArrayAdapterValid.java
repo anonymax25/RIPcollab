@@ -26,14 +26,15 @@ public class CustomArrayAdapterValid extends BaseAdapter implements ListAdapter 
     private ArrayList<Trajet> list;
     private Context context;
     private RequestQueue requestQueue;
-    private static final String apiURI = "http://192.168.43.220:80/-WEB-R.I.P-Project/API/api/";
+    private String apiURI;
 
 
 
-    public CustomArrayAdapterValid(ArrayList<Trajet> list, Context context, RequestQueue requestQueue) {
+    public CustomArrayAdapterValid(ArrayList<Trajet> list, Context context, RequestQueue requestQueue, String apiURI) {
         this.list = list;
         this.context = context;
         this.requestQueue = requestQueue;
+        this.apiURI = apiURI;
     }
 
     @Override
@@ -71,6 +72,7 @@ public class CustomArrayAdapterValid extends BaseAdapter implements ListAdapter 
         finish.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+
                 Toast.makeText(context, "Trip finished",Toast.LENGTH_LONG).show();
                 list.remove(position);
 

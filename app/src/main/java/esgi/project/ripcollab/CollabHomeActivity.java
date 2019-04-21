@@ -4,10 +4,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,6 +24,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -25,6 +32,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,11 +42,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class CollabHome extends AppCompatActivity {
+
+public class CollabHomeActivity extends AppCompatActivity{
 
     //private static final String apiURI = "http://ziongames.fr/API/api/users/list.php";
-    private static final String apiURI = "http://192.168.43.220:80/-WEB-R.I.P-Project/API/api/";
+    private String apiURI;
     private User user;
+    private TextView title;
     private TextView Id;
     private TextView Name;
     private TextView Hours;
@@ -53,15 +63,31 @@ public class CollabHome extends AppCompatActivity {
     private ArrayList<Trajet> trips = new ArrayList<Trajet>();
 
     @Override
+    protected void onResume() {
+
+        super.onResume();
+        trips.clear();
+        if (trips.size() != 0){
+            listView.setAdapter(null);
+        }
+        getCollabInfo(requestQueue, user.getId());
+        getTripsToValidate();
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collab_home);
+
+        apiURI = (String)getIntent().getStringExtra("apiURI");
 
         user = (User)getIntent().getSerializableExtra("SESSION_USER");
         requestQueue = Volley.newRequestQueue(this);
 
         getCollabInfo(requestQueue,user.getId());
 
+        System.out.println(user.getMetier());
         getTripsToValidate();
 
         initInfos();
@@ -75,12 +101,12 @@ public class CollabHome extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        Toast.makeText(CollabHome.this, "Click on disconnect",Toast.LENGTH_LONG).show();
+        Toast.makeText(CollabHomeActivity.this, "Click on disconnect",Toast.LENGTH_LONG).show();
 
     }
 
     public void getTripsToValidate(){
-            String stringURL = apiURI + "users/listTrips.php?idChauffeur=" + user.getId();
+            String stringURL = apiURI + "users/listTrips.php?idCollaborateur=" + user.getId();
 
             JsonArrayRequest objectRequest = new JsonArrayRequest(
                     Request.Method.GET,
@@ -100,16 +126,9 @@ public class CollabHome extends AppCompatActivity {
                                         trips.add(new Trajet(jsonobject.getInt("idTrajet"),jsonobject.getInt("idClient"),jsonobject.getInt("idChauffeur"),
                                                 jsonobject.getString("heureDebut"),jsonobject.getString("heureFin"), jsonobject.getString("dateResevation"),
                                                 jsonobject.getInt("distanceTrajet"),jsonobject.getDouble("prixtrajet"),jsonobject.getString("debut"),jsonobject.getString("fin"),
-                                                jsonobject.getString("duration"),jsonobject.getString("state"),jsonobject.getInt("stateDriver")                                     ));
-
-                                        //trajets2.add(jsonobject.getString("heureDebut") + " From " + jsonobject.getString("debut") + " to " + jsonobject.getString("fin"));
-                                        //System.out.println("http" + jsonobject.toString(2));
-                                        //Trajet trip = new TR
+                                                jsonobject.getString("duration"),jsonobject.getString("state"),jsonobject.getInt("stateDriver")));
                                     }
                                 }
-
-                                //System.out.println(trajets2);
-
                                 createListView();
 
                             }catch (JSONException e){
@@ -127,11 +146,15 @@ public class CollabHome extends AppCompatActivity {
             requestQueue.add(objectRequest);
 
     }
+
     public void createListView(){
 
         System.out.println(trips);
 
         if (trips.size() != 0){
+            TextView noTrips = (TextView) findViewById(R.id.tv_noTrips);
+            noTrips.setText("");
+
             CustomArrayAdapter adapter = new CustomArrayAdapter(trips, this, requestQueue);
 
             listView = (ListView) findViewById(R.id.lvTrajets);
@@ -141,8 +164,10 @@ public class CollabHome extends AppCompatActivity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent(CollabHome.this, TrajetActivity.class);
+                    Intent intent = new Intent(CollabHomeActivity.this, TrajetActivity.class);
                     intent.putExtra("TRAJET",trips.get(position));
+                    intent.putExtra("USER",user);
+                    intent.putExtra("apiURI", apiURI);
                     startActivity(intent);
                 }
             });
@@ -160,7 +185,7 @@ public class CollabHome extends AppCompatActivity {
         Quit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(CollabHome.this)
+                new AlertDialog.Builder(CollabHomeActivity.this)
                         .setTitle("Question ?")
                         .setMessage("Etes-vous sur de vouloir vous déconnecter ?")
                         .setPositiveButton("oui", new DialogInterface.OnClickListener() {
@@ -181,50 +206,25 @@ public class CollabHome extends AppCompatActivity {
         });
     }
 
-
     public void trajetValideListenerButton(){
         TrajetsValide = (Button) findViewById(R.id.btnValidTrips);
         TrajetsValide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                String stringURL = apiURI + "users/listTrips.php?idChauffeur=" + user.getId();
-
-                JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, stringURL,
-                        null,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-
-                                    System.out.println(response.toString(2));
-
-                                }catch (JSONException e){
-                                    System.out.println(e);
-                                }
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("ERRHTTP", "http err onResponse: " + error.toString());
-                            }
-                        }
-                );
-                requestQueue.add(objectRequest);
-                */
-                if (!CollabHome.this.isFinishing()){
-                    Intent intent = new Intent(CollabHome.this, ValidActivity.class);
+                if (!CollabHomeActivity.this.isFinishing()){
+                    Intent intent = new Intent(CollabHomeActivity.this, ValidActivity.class);
                     intent.putExtra("SESSION_USER", user);
+                    intent.putExtra("apiURI", apiURI);
                     startActivity(intent);
                 }
-
-
             }
         });
     }
 
     public void initInfos(){
+        title = (TextView)findViewById(R.id.title);
+        title.setText(title.getText().toString() + user.getMetier());
+
         Id = (TextView)findViewById(R.id.tvid);
         Id.setText("User ID: " + user.getId());
 
@@ -250,7 +250,10 @@ public class CollabHome extends AppCompatActivity {
             public void onClick(View v) {
 
                 trips.clear();
-                listView.setAdapter(null);
+                if (trips.size() != 0){
+                    listView.setAdapter(null);
+                }
+
 
                 getCollabInfo(requestQueue, user.getId());
                 getTripsToValidate();
@@ -302,6 +305,9 @@ public class CollabHome extends AppCompatActivity {
 
                             System.out.println(response.toString(2));
 
+                            user.setMetier(response.getString("metier"));
+                            System.out.println(user.getMetier());
+
                             //Online Switch
                             Online = (Switch) findViewById(R.id.swOnline);
                             if (response.getInt("isOnline") == 1){
@@ -340,10 +346,12 @@ public class CollabHome extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("ERRHTTP", "http err onResponse: " + error.toString());
+                        Log.e("ERRHTTP", "http err onResponse collab: " + error.toString());
                     }
                 }
         );
         requestQueue.add(objectRequest);
     }
+
+
 }

@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
     private Button Login;
     private int counter = 5;
+    private static final String apiURI = "http://192.168.43.220:80/-WEB-R.I.P-Project/API/api/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void validate(final String email, final String password){
 
-        String stringURL = "http://192.168.43.220:80/-WEB-R.I.P-Project/API/api/users/list.php";
+        String stringURL = apiURI + "users/list.php";
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
@@ -121,8 +122,9 @@ public class MainActivity extends AppCompatActivity {
                                         if (user.checkRightPassword(password)){
                                             if (user.getIsCollaborateur() == 1){
                                                 Info.setText("Attempts remaining: " + counter);
-                                                Intent intent = new Intent(MainActivity.this, CollabHome.class);
+                                                Intent intent = new Intent(MainActivity.this, CollabHomeActivity.class);
                                                 intent.putExtra("SESSION_USER", user);
+                                                intent.putExtra("apiURI", apiURI);
                                                 startActivity(intent);
                                             } else {
                                                 Info.setText("Vous n'etes pas un collaborateur!\nInscrivez vous sur le site\nAttempts remaining: " + counter);

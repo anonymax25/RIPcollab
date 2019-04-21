@@ -48,6 +48,8 @@ public class User implements Serializable {
     private int idEntreprise;
     private int isDirecteur;
 
+    private String metier;
+
     public User(){
 
     }
@@ -74,6 +76,14 @@ public class User implements Serializable {
     public String toString(){
         String string = "USER => ID: " + id + " nom: " + last_name + " " + first_name;
         return string;
+    }
+
+    public void setMetier(String metier){
+        this.metier = metier;
+    }
+
+    public String getMetier(){
+        return this.metier;
     }
     public int getId() {
         return id;

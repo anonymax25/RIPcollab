@@ -15,9 +15,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TrajetActivity"></activity>
+        <activity android:name=".TrajetActivity" />
         <activity android:name=".ValidActivity" />
-        <activity android:name=".CollabHome" />
+        <activity android:name=".CollabHomeActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

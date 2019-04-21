@@ -30,7 +30,7 @@ public class ValidActivity extends AppCompatActivity {
     private TextView Name;
     private ListView listView;
     private ArrayList<Trajet> trips = new ArrayList<Trajet>();
-    private String apiURI = "http://192.168.43.220:80/-WEB-R.I.P-Project/API/api/";
+    private String apiURI;
     private RequestQueue requestQueue;
 
     @Override
@@ -38,6 +38,7 @@ public class ValidActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valid);
 
+        apiURI = (String)getIntent().getStringExtra("apiURI");
         user = (User)getIntent().getSerializableExtra("SESSION_USER");
         requestQueue = Volley.newRequestQueue(this);
 
@@ -64,7 +65,7 @@ public class ValidActivity extends AppCompatActivity {
 
     public void getValidTrips(){
 
-        String stringURL = apiURI + "users/listTripsValidated.php?idChauffeur=" + user.getId();
+        String stringURL = apiURI + "users/listTripsValidated.php?idCollaborateur=" + user.getId() +"&metier=" + user.getMetier();
 
         JsonArrayRequest objectRequest = new JsonArrayRequest(
                 Request.Method.GET,
@@ -112,7 +113,7 @@ public class ValidActivity extends AppCompatActivity {
         }
 
 
-        CustomArrayAdapterValid adapter = new CustomArrayAdapterValid(trips, this, requestQueue);
+        CustomArrayAdapterValid adapter = new CustomArrayAdapterValid(trips, this, requestQueue,apiURI);
 
         listView = (ListView) findViewById(R.id.lv_validated);
 
