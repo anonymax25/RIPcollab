@@ -1,9 +1,12 @@
 package esgi.project.ripcollab;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -54,13 +57,44 @@ public class CollabHomeActivity extends AppCompatActivity{
     private TextView Hours;
     private Switch Online;
     private RatingBar Rating;
-    private Button Refresh;
-    private Button Quit;
-    private Button TrajetsValide;
     private RequestQueue requestQueue;
     private int isOnline;
     private static ListView listView;
     private ArrayList<Trajet> trips = new ArrayList<Trajet>();
+
+    // create an action bar button
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.disconnect, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // handle button activities
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.mybutton) {
+            new AlertDialog.Builder(CollabHomeActivity.this)
+                    .setTitle("Question ?")
+                    .setMessage("Etes-vous sur de vouloir vous déconnecter ?")
+                    .setPositiveButton("oui", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish(); //ferme l'activitée en cours
+                        }
+                    })
+                    .setNegativeButton("non", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .setCancelable(false)
+                    .show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onResume() {
@@ -80,6 +114,11 @@ public class CollabHomeActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collab_home);
 
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
         apiURI = (String)getIntent().getStringExtra("apiURI");
 
         user = (User)getIntent().getSerializableExtra("SESSION_USER");
@@ -91,11 +130,7 @@ public class CollabHomeActivity extends AppCompatActivity{
         getTripsToValidate();
 
         initInfos();
-        initRefrseh();
         initOnline();
-        initDeco();
-        trajetValideListenerButton();
-
     }
 
     @Override
@@ -153,6 +188,7 @@ public class CollabHomeActivity extends AppCompatActivity{
 
         if (trips.size() != 0){
             TextView noTrips = (TextView) findViewById(R.id.tv_noTrips);
+            noTrips.setHeight(0);
             noTrips.setText("");
 
             CustomArrayAdapter adapter = new CustomArrayAdapter(trips, this, requestQueue);
@@ -173,52 +209,12 @@ public class CollabHomeActivity extends AppCompatActivity{
             });
         } else {
             TextView noTrips = (TextView) findViewById(R.id.tv_noTrips);
+
             noTrips.setText("No trips for you yet.\nSorry :'(");
         }
 
 
         //final ArrayAdapter<String> adapter = new ArrayAdapter<String>(CollabHome.this, android.R.layout.simple_list_item_1, trajets2);
-    }
-
-    public void initDeco(){
-        Quit = (Button) findViewById(R.id.btnDeco);
-        Quit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(CollabHomeActivity.this)
-                        .setTitle("Question ?")
-                        .setMessage("Etes-vous sur de vouloir vous déconnecter ?")
-                        .setPositiveButton("oui", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish(); //ferme l'activitée en cours
-                            }
-                        })
-                        .setNegativeButton("non", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setCancelable(false)
-                        .show();
-            }
-        });
-    }
-
-    public void trajetValideListenerButton(){
-        TrajetsValide = (Button) findViewById(R.id.btnValidTrips);
-        TrajetsValide.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!CollabHomeActivity.this.isFinishing()){
-                    Intent intent = new Intent(CollabHomeActivity.this, ValidActivity.class);
-                    intent.putExtra("SESSION_USER", user);
-                    intent.putExtra("apiURI", apiURI);
-                    startActivity(intent);
-                }
-            }
-        });
     }
 
     public void initInfos(){
@@ -239,24 +235,6 @@ public class CollabHomeActivity extends AppCompatActivity{
             public void onClick(View v) {
                 switchOnline(user.getId());
                 System.out.println("click online");
-            }
-        });
-    }
-
-    public void initRefrseh(){
-        Refresh = (Button) findViewById(R.id.btnRefresh);
-        Refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                trips.clear();
-                if (trips.size() != 0){
-                    listView.setAdapter(null);
-                }
-
-
-                getCollabInfo(requestQueue, user.getId());
-                getTripsToValidate();
             }
         });
     }
@@ -353,5 +331,42 @@ public class CollabHomeActivity extends AppCompatActivity{
         requestQueue.add(objectRequest);
     }
 
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+
+                    trips.clear();
+                    if (trips.size() != 0){
+                        listView.setAdapter(null);
+                    }
+
+
+                    getCollabInfo(requestQueue, user.getId());
+                    getTripsToValidate();
+
+                    Toast.makeText(CollabHomeActivity.this,"Information refreshed",Toast.LENGTH_SHORT).show();
+                    return true;
+                case R.id.navigation_validated:
+                    if (!CollabHomeActivity.this.isFinishing()){
+                        Intent intent = new Intent(CollabHomeActivity.this, ValidActivity.class);
+                        intent.putExtra("SESSION_USER", user);
+                        intent.putExtra("apiURI", apiURI);
+                        startActivity(intent);
+                    }
+
+                    return true;
+                case R.id.navigation_old:
+                    Intent intent = new Intent(CollabHomeActivity.this, OldTripsActivity.class);
+                    intent.putExtra("SESSION_USER", user);
+                    intent.putExtra("apiURI", apiURI);
+                    startActivity(intent);
+                    return true;
+            }
+            return false;
+        }
+    };
 }

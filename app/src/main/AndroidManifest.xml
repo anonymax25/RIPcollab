@@ -15,6 +15,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".OldTripsActivity"></activity>
+        <activity
+            android:name=".NavHomeActivity"
+            android:label="@string/title_activity_nav_home"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".TrajetActivity" />
         <activity android:name=".ValidActivity" />
         <activity android:name=".CollabHomeActivity" />
