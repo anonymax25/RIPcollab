@@ -68,6 +68,7 @@ public class CustomArrayAdapter extends BaseAdapter implements ListAdapter {
         TextView listItemText = (TextView)view.findViewById(R.id.list_item_string);
         listItemText.setText(current.getHeureDebut() + " from " + current.getDebut() + " to " + current.getFin());
 
+        notifyDataSetChanged();
 
         return view;
     }

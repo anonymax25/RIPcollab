@@ -27,14 +27,15 @@ public class CustomArrayAdapterValid extends BaseAdapter implements ListAdapter 
     private Context context;
     private RequestQueue requestQueue;
     private String apiURI;
+    private User user;
 
 
-
-    public CustomArrayAdapterValid(ArrayList<Trajet> list, Context context, RequestQueue requestQueue, String apiURI) {
+    public CustomArrayAdapterValid(ArrayList<Trajet> list, Context context, RequestQueue requestQueue, String apiURI, User user) {
         this.list = list;
         this.context = context;
         this.requestQueue = requestQueue;
         this.apiURI = apiURI;
+        this.user = user;
     }
 
     @Override
@@ -68,6 +69,18 @@ public class CustomArrayAdapterValid extends BaseAdapter implements ListAdapter 
 
         //Handle buttons and add onClickListeners
         Button finish = (Button)view.findViewById(R.id.btn_finish);
+        System.out.println(user.getMetier());
+        if (user.getMetier().equals("chauffeur")){
+            if (current.getAboveStartTime() == 0){
+                finish.setText("Le trajet n'as meme pas encore commencé\nvous ne pouvez pas le terminer");
+                finish.setEnabled(false);
+            }
+        }else {
+            finish.setText("Seul le chauffeur peut terminer le trajet");
+            finish.setEnabled(false);
+        }
+
+
 
         finish.setOnClickListener(new View.OnClickListener(){
             @Override

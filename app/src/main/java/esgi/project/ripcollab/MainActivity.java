@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
     private Button Login;
     private int counter = 5;
-    private static final String apiURI = "http://192.168.43.220:80/-WEB-R.I.P-Project/API/api/";
+    private static final String apiURI = "http://192.168.1.24:80/-WEB-R.I.P-Project/API/api/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

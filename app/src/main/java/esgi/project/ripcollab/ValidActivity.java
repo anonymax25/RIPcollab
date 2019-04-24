@@ -78,7 +78,7 @@ public class ValidActivity extends AppCompatActivity {
                                     trips.add(new Trajet(jsonobject.getInt("idTrajet"),jsonobject.getInt("idClient"),jsonobject.getInt("idChauffeur"),
                                             jsonobject.getString("heureDebut"),jsonobject.getString("heureFin"), jsonobject.getString("dateResevation"),
                                             jsonobject.getInt("distanceTrajet"),jsonobject.getDouble("prixtrajet"),jsonobject.getString("debut"),jsonobject.getString("fin"),
-                                            jsonobject.getString("duration"),jsonobject.getString("state"),jsonobject.getInt("stateDriver")                                     ));
+                                            jsonobject.getString("duration"),jsonobject.getString("state"),jsonobject.getInt("stateDriver"),jsonobject.getInt("aboveStartTime")));
                                 }
                             }
 
@@ -106,7 +106,7 @@ public class ValidActivity extends AppCompatActivity {
         }
 
 
-        CustomArrayAdapterValid adapter = new CustomArrayAdapterValid(trips, this, requestQueue,apiURI);
+        CustomArrayAdapterValid adapter = new CustomArrayAdapterValid(trips, this, requestQueue, apiURI, user);
 
         listView = (ListView) findViewById(R.id.lv_validated);
 

@@ -99,7 +99,7 @@ public class CollabHomeActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
 
-        super.onResume();
+
         trips.clear();
         if (trips.size() != 0){
             listView.setAdapter(null);
@@ -107,6 +107,7 @@ public class CollabHomeActivity extends AppCompatActivity{
         getCollabInfo(requestQueue, user.getId());
         getTripsToValidate();
 
+        super.onResume();
     }
 
     @Override
@@ -161,7 +162,7 @@ public class CollabHomeActivity extends AppCompatActivity{
                                         trips.add(new Trajet(jsonobject.getInt("idTrajet"),jsonobject.getInt("idClient"),jsonobject.getInt("idChauffeur"),
                                                 jsonobject.getString("heureDebut"),jsonobject.getString("heureFin"), jsonobject.getString("dateResevation"),
                                                 jsonobject.getInt("distanceTrajet"),jsonobject.getDouble("prixtrajet"),jsonobject.getString("debut"),jsonobject.getString("fin"),
-                                                jsonobject.getString("duration"),jsonobject.getString("state"),jsonobject.getInt("stateDriver")));
+                                                jsonobject.getString("duration"),jsonobject.getString("state"),jsonobject.getInt("stateDriver"),0));
                                     }
                                 }
                                 createListView();
@@ -284,7 +285,7 @@ public class CollabHomeActivity extends AppCompatActivity{
                             System.out.println(response.toString(2));
 
                             user.setMetier(response.getString("metier"));
-                            System.out.println(user.getMetier());
+                            System.out.println(" METIERRRRR " + user.getMetier());
 
                             //Online Switch
                             Online = (Switch) findViewById(R.id.swOnline);

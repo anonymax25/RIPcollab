@@ -17,8 +17,9 @@ public class Trajet implements Serializable {
     private String duration;
     private String state;
     private int stateDriver;
+    private int aboveStartTime;
 
-    public Trajet(int idTrajet, int idClient, int idChauffeur, String heureDebut, String heureFin, String dateResevation, int distanceTrajet, double prixtrajet, String debut, String fin, String duration, String state, int stateDriver) {
+    public Trajet(int idTrajet, int idClient, int idChauffeur, String heureDebut, String heureFin, String dateResevation, int distanceTrajet, double prixtrajet, String debut, String fin, String duration, String state, int stateDriver, int aboveStartTime) {
         this.idTrajet = idTrajet;
         this.idClient = idClient;
         this.idChauffeur = idChauffeur;
@@ -32,6 +33,7 @@ public class Trajet implements Serializable {
         this.duration = duration;
         this.state = state;
         this.stateDriver = stateDriver;
+        this.aboveStartTime = aboveStartTime;
     }
 
     @Override
@@ -157,5 +159,15 @@ public class Trajet implements Serializable {
         this.stateDriver = stateDriver;
     }
 
+    public void setPrixtrajet(double prixtrajet) {
+        this.prixtrajet = prixtrajet;
+    }
 
+    public int getAboveStartTime() {
+        return aboveStartTime;
+    }
+
+    public void setAboveStartTime(int aboveStartTime) {
+        this.aboveStartTime = aboveStartTime;
+    }
 }
