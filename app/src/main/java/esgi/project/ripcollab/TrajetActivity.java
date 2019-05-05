@@ -31,7 +31,6 @@ public class TrajetActivity extends AppCompatActivity {
     private Trajet trajet;
     private TextView tv;
     private String apiURI;
-    private Button deleteBtn;
     private Button addBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,36 +45,11 @@ public class TrajetActivity extends AppCompatActivity {
         trajet = (Trajet)getIntent().getSerializableExtra("TRAJET");
 
         tv = (TextView) findViewById(R.id.tv_trajet);
-        tv.setText(trajet.toString());
+        tv.setText("Trajet le: " + trajet.getHeureDebut() + " à " + trajet.getHeureFin() + "\n" + "Duration: " + trajet.getDuration() + "\n" + "Distance: " + trajet.getDistanceTrajet() + "\n" + "Depart: " + trajet.getDebut() + "\n" + "Arrivée: " + trajet.getFin() + "\n" + "Prix course: " + trajet.getPrixtrajet() + "€\n");
 
         //Handle buttons and add onClickListeners
-        deleteBtn = (Button)findViewById(R.id.delete_btn);
         addBtn = (Button)findViewById(R.id.add_btn);
 
-        deleteBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(TrajetActivity.this)
-                        .setTitle("Question ?")
-                        .setMessage("Etes-vous sur de vouloir refuser le trajet ?")
-                        .setPositiveButton("oui", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(TrajetActivity.this, "Trip refused",Toast.LENGTH_LONG).show();
-                                finish(); //ferme l'activitée en cours
-                            }
-                        })
-                        .setNegativeButton("non", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setCancelable(false)
-                        .show();
-
-            }
-        });
         addBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {

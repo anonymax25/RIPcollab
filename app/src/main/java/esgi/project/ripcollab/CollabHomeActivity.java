@@ -362,7 +362,7 @@ public class CollabHomeActivity extends AppCompatActivity{
                     return true;
                 case R.id.navigation_old:
                     Intent intent = new Intent(CollabHomeActivity.this, OldTripsActivity.class);
-                    intent.putExtra("SESSION_USER", user);
+                    intent.putExtra("USER", user);
                     intent.putExtra("apiURI", apiURI);
                     startActivity(intent);
                     return true;

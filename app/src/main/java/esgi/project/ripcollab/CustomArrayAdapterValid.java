@@ -86,7 +86,7 @@ public class CustomArrayAdapterValid extends BaseAdapter implements ListAdapter 
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(context, "Trip finished",Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, "Trip finished " + current.getIdTrajet() ,Toast.LENGTH_LONG).show();
                 list.remove(position);
 
 
@@ -101,6 +101,7 @@ public class CustomArrayAdapterValid extends BaseAdapter implements ListAdapter 
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
+                                    Toast.makeText(context, "Trip done",Toast.LENGTH_LONG).show();
                                     System.out.println(response.toString(2));
                                 }catch (JSONException e){
                                     System.out.println(e);
@@ -110,7 +111,7 @@ public class CustomArrayAdapterValid extends BaseAdapter implements ListAdapter 
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Log.e("ERRHTTP", "http err onResponse: " + error.toString());
+                                Log.e("ERRHTTP", "http err onResponse finished: " + error.toString());
                             }
                         }
                 );
